@@ -1,65 +1,31 @@
 <?php
 declare(strict_types=1);
+include_once "../conf/DataBaseConnection.php";
+
 
 class ControlDb{
 
-public function __construct($config){
-
-    $this->Db=$config['database'];
-    $this->host=$config['host']; 
-    $this->databaseUser=$config['user'];
-    $this->Password=$config['password'];
-    $this->connect();
-}
-    private $Db;
-    private $database;
-    private $databaseUser;
-    private $Password ;
-
-
-
-    public function connect(){
-        $test=true;
-        $dsn ='mysql:host='.$this->host.';dbname='.$this->Db.';charset=utf8';
-        try{
-        $this->database= new PDO($dsn, $this->databaseUser, $this->Password, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-        }
-        catch(PDOException $e){
-            echo 'Error connecting to the data base ====> check connect()'.$e->getMessage();
-        }
-    }
-
-
-
+   private static $database;
 
     // ajouter une table 
-
-    public function setTableName(string $tb){
-        
-        // verifie the exixtance of the table 
-        try {
-            $result = $this->database->query("SELECT 1 FROM $tb LIMIT 1");
-        } catch (Exception $e) {
-            // We got an exception == table not found
-            echo $e->getMessage();
-            return FALSE;
-        }
-        // affect table name to the property 
-         $this->table_name=$tb;
-    }
-
-
-
-
-    // get table name 
-    public function getTableName(){
-        return $this->table_name;
-    }
-
-
     
+    private static function verifyConnection(){
+        ControlDb::$database =DataBaseConnection::getConnection();
+    }
+
+    // good for now 
+    public static function selectAll($tableName){
+        ControlDb::verifyConnection();
+       $query= ControlDb::$database->query("SELECT * FROM $tableName");
+        $data=$query->fetchAll(PDO::FETCH_ASSOC);
+       // print_r ($data[0]);
+        return $data;
+    }
+
+
     // select all elements of the table 
-    public function select(...$parmeter){
+    public static function select($tableName,...$parmeter){
+        ControlDb::verifyConnection();
         $fetch=array();
         // prepare the query 
         $str="*";
@@ -78,50 +44,24 @@ public function __construct($config){
  
     // try to execute the query 
     try{
-        $result = $this->database->query("SELECT $str FROM $this->table_name");
+        $result = ControlDb::$database->query("SELECT $str FROM $tableName");
     }
     catch(PDOException $e)
     {
         echo "error in parameter : (select) ".$e->getMessage();
         return false;
     }
-       // fetch  data base object
-       $j=0; 
-       if($str!="*"){
-     while($data=$result->fetch()){
-           
-               // insert data in fech table to retur it 
-               for($i=0;$i<count($parmeter);$i++)
-               {
-               $fetch_ex[$parmeter[$i]]=$data[$parmeter[$i]];
-           }
-           $fetch[$j]=$fetch_ex;
-           $j++;
-             
-       }
-    }
-    else{
-        $tab=array();
-        $tab=$this->getCol();
-        while($data=$result->fetch()){
-            for($i=0;$i<count($tab);$i++){
-                $fetch_ex[$tab[$i]]=$data[$tab[$i]];
-            }
-            $fetch[$j]=$fetch_ex;
-           $j++;
 
-        }
-    }
-
-           return $fetch; 
-    }
+    return $result->fetchAll(PDO::FETCH_ASSOC);
+}
 
 
      
 
 
 
-    public function insert($champs,$table){
+    public static function  insert($champs,$tableName){
+        ControlDb::verifyConnection();
         $str_key="`";
         $str_value="";
 
@@ -147,7 +87,7 @@ public function __construct($config){
         }
         // try to execute the query 
         try{
-        $result = $this->database->prepare("INSERT INTO $table ($str_key )VALUES ($str_value)");
+        $result = ControlDb::$database->prepare("INSERT INTO $tableName ($str_key )VALUES ($str_value)");
         $result->execute($tab);
         }
         catch(PDOException $e){
@@ -161,7 +101,8 @@ public function __construct($config){
      * $filter : el champ eli bech na3mel bih rsearch al hajet eli bech nfasakhha 
      * $log->delete(['name'=>$user1['name'],'pseudo'=>$user1['pseudo'],'password'=>$user1['password']])
      */
-    public function delete($filter,$table){
+    public static function  delete($filter,$tableName){
+        ControlDb::verifyConnection();
         $filter_key=" WHERE ";
         $i=0;
         // prepare the query 
@@ -179,7 +120,7 @@ public function __construct($config){
         }
         // try to execute the query 
         try{
-            $result = $this->database->prepare("DELETE FROM $table $filter_key");
+            $result = ControlDb::$database->prepare("DELETE FROM $tableName $filter_key");
             $result->execute($tab2);
             }
             catch(PDOException $e){
@@ -195,7 +136,8 @@ $filter : champs le9dim mta3i
  *$log->update(['name'=>'zaza','pseudo'=>'bbcha','password'=>'shit01'],['name'=>$user1['name'],'pseudo'=>$user1['pseudo'],'password'=>$user1['password']])
  * 
 */ 
-    public function update($champs,$filter,$table){
+    public static function update($champs,$filter,$table){
+        ControlDb::verifyConnection();
         $str_key="";
         $str_value="";
         $filter_key=" Where ";
@@ -229,20 +171,21 @@ $filter : champs le9dim mta3i
         $tab=array_merge($tab,$tab2);
         // try to execute the query 
         try{
-        $result = $this->database->prepare("UPDATE $table SET $str_key $filter_key");
+        $result = ControlDb::$database->prepare("UPDATE $table SET $str_key $filter_key");
         $result->execute($tab);
         }
         catch(PDOException $e){
-            echo "erreur dans l'accé au base de donné (update)" .$e->getMessage();
+            echo "err in update query : " .$e->getMessage();
         }
     }
 
 
 // get table attribute
-public function getCol() {
+public static function getCol($tableName) {
+    ControlDb::verifyConnection();
     try {
     // get column names
-    $query = $this->database->prepare("DESCRIBE $this->table_name");
+    $query =ControlDb::$database->prepare("DESCRIBE $tableName");
     $query->execute();
     $table_names = $query->fetchAll(PDO::FETCH_COLUMN);
     print_r($table_names);
@@ -255,46 +198,22 @@ public function getCol() {
 
 }
 
-    // print table :: debuging method
-    public function affiche_fetched_array($array){
-       foreach ($array as $val1=>$val2){
-           foreach($val2 as $key=>$value)
-           {
-               echo $key ."===>  ".$value."<br>";
-           }
-           echo "<br> <br>";
-       }
-    }
+    
 
-    public function convertNormalTable($array){
-        $dataTab=array();
-        $fetched=array();
-        $i=0;
-        foreach ($array as $val1=>$val2){
-            foreach($val2 as $key=>$value)
-            {
-               $dataTab[$key] =$value;
-               
-            }
-            $i++;
-            $fetched[$i]=$dataTab;
-    }
-    return $fetched;
-}
-
-
+    
 // incode to json 
-public function json(array $array){
+public static function json(array $array){
     return json_encode($array);
 }
 
 
-public function search($champs,$filter){
+public static function search($champs,$filter,$table){
+    ControlDb::verifyConnection();
     $champKey="SELECT ";
     $filter_key="";
     for($i=0;$i<count($champs);$i++){
         if($i==count($champs)-1){
-            $champKey.=$champs[$i]." FROM ". $this->table_name. " WHERE " ;
+            $champKey.=$champs[$i]." FROM ". $table. " WHERE " ;
         }
         else{
             $champKey.=$champs[$i].' , ' ;   
@@ -317,7 +236,7 @@ public function search($champs,$filter){
 
     $query=$champKey.$filter_key;
     try{
-        $result = $this->database->prepare($query);
+        $result =ControlDb::$database->prepare($query);
         $result->execute($tab2);
         }
         catch(PDOException $e){
@@ -326,21 +245,8 @@ public function search($champs,$filter){
         }
 
 
-        // fetching the data
-        $j=0;
-        $fetch=array();
-        while($data=$result->fetch()){
-           
-            // insert data in fech table to retur it 
-            for($i=0;$i<count($champs);$i++)
-            {
-            $fetch_ex[$champs[$i]]=$data[$champs[$i]];
-        }
-        $fetch[$j]=$fetch_ex;
-        $j++;
-          
-    }
-        return $fetch;
+      
+        return $result->fetchAll(PDO::FETCH_ASSOC);
  }
     }
 
