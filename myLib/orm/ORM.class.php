@@ -74,6 +74,7 @@ public function __construct()
   if($verif){
    $conn=DataBaseConnection::getConnection();
     $array =(array)$obj;
+    unset($array['id']);
     ControlDb:: update($array,$filter,$tableName);
   
   }

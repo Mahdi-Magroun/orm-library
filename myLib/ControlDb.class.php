@@ -108,12 +108,12 @@ class ControlDb{
         // prepare the query 
         foreach($filter as $key=>$value){
             if($i==count($filter)-1){
-            $filter_key=$filter_key.$key."=?";
+            $filter_key=$filter_key.$key."?";
             $tab2[$i]=$value;
             
             break;
         }
-        $filter_key=$filter_key.$key."=? AND ";
+        $filter_key=$filter_key.$key."? ";
         $tab2[$i]=$value;
 
             $i++;
@@ -157,12 +157,12 @@ $filter : champs le9dim mta3i
         $i=0;
         foreach($filter as $key=>$value){
             if($i==count($filter)-1){
-            $filter_key=$filter_key.$key."=?";
+            $filter_key=$filter_key.$key."?";
             $tab2[$i]=$value;
             
             break;
         }
-        $filter_key=$filter_key.$key."=? AND ";
+        $filter_key=$filter_key.$key."? ";
         $tab2[$i]=$value;
 
             $i++;
@@ -223,12 +223,12 @@ public static function search($champs,$filter,$table,$mode=PDO::FETCH_ASSOC){
     $i=0;
     foreach($filter as $key=>$value){
         if($i==count($filter)-1){
-        $filter_key=$filter_key.$key."=?";
+        $filter_key=$filter_key.$key."?";
         $tab2[$i]=$value;
         
         break;
     }
-    $filter_key=$filter_key.$key."=? AND ";
+    $filter_key=$filter_key.$key."? ";
     $tab2[$i]=$value;
 
         $i++;
