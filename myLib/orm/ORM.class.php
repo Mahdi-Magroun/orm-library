@@ -22,7 +22,7 @@ public function __construct()
     $cols=ORM::getTableColums($tableName);
     $conn=DataBaseConnection::getConnection();
     $query=$conn->query("SELECT * FROM $tableName");
-    $query->setFetchMode(PDO::FETCH_CLASS,"Tclass");
+    $query->setFetchMode(PDO::FETCH_CLASS,$clsName);
     $res=$query->fetchAll();
     return $res; 
 
@@ -34,38 +34,62 @@ public function __construct()
 
 
  }
- public static function search(){
-  // verify columns 
-  // generate query and fetch it into a given class 
-
+ public static function search($obj,$filter,$tableName){
+  $class = get_class($obj);
+  if(!class_exists($class))throw new Exception("class not found in update ORM");
+  $classVar=get_class_vars($class);
+  $verif=ORM::verifyColumns($class,$tableName);
+  if($verif){
+   $conn=DataBaseConnection::getConnection();
+    $array =(array)$obj;
+    $result=ControlDb:: search(array_keys($array),$filter,$tableName,PDO::FETCH_CLASS);
+     $result->setFetchMode(PDO::FETCH_CLASS,$class);
+     return $result->fetchAll();
+  
+  }
  }
+
+ 
  public static function insert($obj,$tableName){
    $class = get_class($obj);
-   if(!class_exists($class))throw new Exception("class not found in select ORM");
+   if(!class_exists($class))throw new Exception("class not found in insert ORM");
    $classVar=get_class_vars($class);
    $verif=ORM::verifyColumns($class,$tableName);
    if($verif){
     $conn=DataBaseConnection::getConnection();
      $array =(array)$obj;
      unset($array['id']); 
-
-    ControlDb::insert($array,$tableName);
+     ControlDb::insert($array,$tableName);
    
    }
 
  }
 
 
- public static function update(){}
- public static function delete(){}
+ public static function update($obj,$filter,$tableName){
+  $class = get_class($obj);
+  if(!class_exists($class))throw new Exception("class not found in update ORM");
+  $classVar=get_class_vars($class);
+  $verif=ORM::verifyColumns($class,$tableName);
+  if($verif){
+   $conn=DataBaseConnection::getConnection();
+    $array =(array)$obj;
+    ControlDb:: update($array,$filter,$tableName);
+  
+  }
+ }
+ public static function delete($obj,$filter,$tableName){
+  $class = get_class($obj);
+  if(!class_exists($class))throw new Exception("class not found in delete ORM");
+  $classVar=get_class_vars($class);
+  $verif=ORM::verifyColumns($class,$tableName);
+  if($verif){
+   $conn=DataBaseConnection::getConnection();
+    $array =(array)$obj;
+    ControlDb:: delete($filter,$tableName);
 
-
-
-
-
-
-
-
+ }
+ }
 
 
  private static function verifyColumns($cls,$tableName){
@@ -85,9 +109,6 @@ public function __construct()
    
    
  }
-
-
-
 
 
  private static function getTableColums($tableName){

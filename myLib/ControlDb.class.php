@@ -207,7 +207,7 @@ public static function json(array $array){
 }
 
 
-public static function search($champs,$filter,$table){
+public static function search($champs,$filter,$table,$mode=PDO::FETCH_ASSOC){
     ControlDb::verifyConnection();
     $champKey="SELECT ";
     $filter_key="";
@@ -245,8 +245,11 @@ public static function search($champs,$filter,$table){
         }
 
 
-      
-        return $result->fetchAll(PDO::FETCH_ASSOC);
+        if($mode==PDO::FETCH_ASSOC)
+        return $result->fetchAll($mode);
+        else if($mode==PDO::FETCH_CLASS){
+            return $result;
+        }
  }
     }
 
