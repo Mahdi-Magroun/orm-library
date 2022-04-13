@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-include_once "../conf/DataBaseConnection.php";
+include_once "/var/www/html/php/dataBase_lib/myLib/conf/DataBaseConnection.php";
 
 
 class ControlDb{
