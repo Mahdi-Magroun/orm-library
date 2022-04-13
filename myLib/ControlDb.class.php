@@ -14,7 +14,7 @@ class ControlDb{
     }
 
     // good for now 
-    public static function selectAll($tableName){
+    public static function selectAll($tableName):array{
         ControlDb::verifyConnection();
        $query= ControlDb::$database->query("SELECT * FROM $tableName");
         $data=$query->fetchAll(PDO::FETCH_ASSOC);
@@ -24,7 +24,7 @@ class ControlDb{
 
 
     // select all elements of the table 
-    public static function select($tableName,...$parmeter){
+    public static function select($tableName,...$parmeter):array{
         ControlDb::verifyConnection();
         $fetch=array();
         // prepare the query 
@@ -60,7 +60,7 @@ class ControlDb{
 
 
 
-    public static function  insert($champs,$tableName){
+    public static function  insert(array $champs,String $tableName):void{
         ControlDb::verifyConnection();
         $str_key="`";
         $str_value="";
@@ -101,14 +101,14 @@ class ControlDb{
      * $filter : el champ eli bech na3mel bih rsearch al hajet eli bech nfasakhha 
      * $log->delete(['name'=>$user1['name'],'pseudo'=>$user1['pseudo'],'password'=>$user1['password']])
      */
-    public static function  delete($filter,$tableName){
+    public static function  delete(array $filter,string $tableName):void{
         ControlDb::verifyConnection();
         $filter_key=" WHERE ";
         $i=0;
         // prepare the query 
         foreach($filter as $key=>$value){
             if($i==count($filter)-1){
-            $filter_key=$filter_key.$key."?";
+            $filter_key=$filter_key.$key."  ?";
             $tab2[$i]=$value;
             
             break;
@@ -136,7 +136,7 @@ $filter : champs le9dim mta3i
  *$log->update(['name'=>'zaza','pseudo'=>'bbcha','password'=>'shit01'],['name'=>$user1['name'],'pseudo'=>$user1['pseudo'],'password'=>$user1['password']])
  * 
 */ 
-    public static function update($champs,$filter,$table){
+    public static function update( array $champs,array $filter,String $table):void{
         ControlDb::verifyConnection();
         $str_key="";
         $str_value="";
@@ -181,14 +181,13 @@ $filter : champs le9dim mta3i
 
 
 // get table attribute
-public static function getCol($tableName) {
+public static function getCol(array $tableName):array {
     ControlDb::verifyConnection();
     try {
     // get column names
     $query =ControlDb::$database->prepare("DESCRIBE $tableName");
     $query->execute();
     $table_names = $query->fetchAll(PDO::FETCH_COLUMN);
-    print_r($table_names);
     return $table_names;
 
     } catch(PDOException $e) {
@@ -202,12 +201,12 @@ public static function getCol($tableName) {
 
     
 // incode to json 
-public static function json(array $array){
+public static function json(array $array):string{
     return json_encode($array);
 }
 
 
-public static function search($champs,$filter,$table,$mode=PDO::FETCH_ASSOC){
+public static function search(array $champs,array $filter,String $table,int $mode=PDO::FETCH_ASSOC){
     ControlDb::verifyConnection();
     $champKey="SELECT ";
     $filter_key="";

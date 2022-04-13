@@ -1,14 +1,11 @@
 <?php
-
-use DataBaseConnection as GlobalDataBaseConnection;
-
 class DataBaseConnection{
 // connection property 
-private $host="127.0.0.1";
-private $usr="root";
-private $pwd="mmagrounmahdi@gmail.com";
-private static $db='green-tow'; 
-private static $connection; 
+private String $host="127.0.0.1";
+private String $usr="root";
+private String  $pwd="mmagrounmahdi@gmail.com";
+private static String  $db='green-tow'; 
+private static PDO $connection; 
 
 private function  __construct(){
 
@@ -24,7 +21,7 @@ private function  __construct(){
 }
 
 
-public static function getConnection(){
+public static function getConnection():PDO{
     if(DataBaseConnection::$connection==null){
          new DataBaseConnection();
     }
@@ -33,7 +30,7 @@ public static function getConnection(){
 
 }
 
-public static function getDB(){
+public static function getDB():String{
     return DataBaseConnection::$db;
 }
 

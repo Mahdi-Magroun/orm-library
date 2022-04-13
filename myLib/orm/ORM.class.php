@@ -13,7 +13,7 @@ public function __construct()
     
 }
  
- public static  function select ($clsName,$tableName){
+ public static  function select (String $clsName,String $tableName):array{
 
    $classP=get_class_vars($clsName);
    if(!class_exists($clsName))throw new Exception("class not found in select ORM");
@@ -34,7 +34,7 @@ public function __construct()
 
 
  }
- public static function search($obj,$filter,$tableName){
+ public static function search(Object $obj,array $filter,String $tableName):array{
   $class = get_class($obj);
   if(!class_exists($class))throw new Exception("class not found in update ORM");
   $classVar=get_class_vars($class);
@@ -50,7 +50,7 @@ public function __construct()
  }
 
  
- public static function insert($obj,$tableName){
+ public static function insert(Object $obj,String $tableName){
    $class = get_class($obj);
    if(!class_exists($class))throw new Exception("class not found in insert ORM");
    $classVar=get_class_vars($class);
@@ -66,7 +66,7 @@ public function __construct()
  }
 
 
- public static function update($obj,$filter,$tableName){
+ public static function update(Object $obj,array $filter,String $tableName):void{
   $class = get_class($obj);
   if(!class_exists($class))throw new Exception("class not found in update ORM");
   $classVar=get_class_vars($class);
@@ -79,7 +79,7 @@ public function __construct()
   
   }
  }
- public static function delete($obj,$filter,$tableName){
+ public static function delete(Object $obj,array $filter,String $tableName):void {
   $class = get_class($obj);
   if(!class_exists($class))throw new Exception("class not found in delete ORM");
   $classVar=get_class_vars($class);
@@ -93,7 +93,7 @@ public function __construct()
  }
 
 
- private static function verifyColumns($cls,$tableName){
+ private static function verifyColumns(String $cls,String $tableName):bool{
    $tableColums=ORM::getTableColums($tableName);
    $clsData=get_class_vars($cls);
    $clsKey=array_keys($clsData);
@@ -112,7 +112,7 @@ public function __construct()
  }
 
 
- private static function getTableColums($tableName){
+ private static function getTableColums(String $tableName):array{
    $conn = DataBaseConnection::getConnection();
     $dbName= DataBaseConnection::getDB();
     echo $dbName;
