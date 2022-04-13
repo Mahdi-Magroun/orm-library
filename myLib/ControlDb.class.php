@@ -60,7 +60,7 @@ class ControlDb{
 
 
 
-    public static function  insert(array $champs,String $tableName):void{
+    public static function  insert(array $champs,String $tableName):bool{
         ControlDb::verifyConnection();
         $str_key="`";
         $str_value="";
@@ -88,7 +88,7 @@ class ControlDb{
         // try to execute the query 
         try{
         $result = ControlDb::$database->prepare("INSERT INTO $tableName ($str_key )VALUES ($str_value)");
-        $result->execute($tab);
+        return $result->execute($tab);
         }
         catch(PDOException $e){
             echo "err in insert query (insert)".$e->getMessage();
@@ -101,7 +101,7 @@ class ControlDb{
      * $filter : el champ eli bech na3mel bih rsearch al hajet eli bech nfasakhha 
      * $log->delete(['name'=>$user1['name'],'pseudo'=>$user1['pseudo'],'password'=>$user1['password']])
      */
-    public static function  delete(array $filter,string $tableName):void{
+    public static function  delete(array $filter,string $tableName):bool{
         ControlDb::verifyConnection();
         $filter_key=" WHERE ";
         $i=0;
@@ -121,7 +121,7 @@ class ControlDb{
         // try to execute the query 
         try{
             $result = ControlDb::$database->prepare("DELETE FROM $tableName $filter_key");
-            $result->execute($tab2);
+            return $result->execute($tab2);
             }
             catch(PDOException $e){
                 echo "err in delete Query : ".$e->getMessage();
@@ -136,7 +136,7 @@ $filter : champs le9dim mta3i
  *$log->update(['name'=>'zaza','pseudo'=>'bbcha','password'=>'shit01'],['name'=>$user1['name'],'pseudo'=>$user1['pseudo'],'password'=>$user1['password']])
  * 
 */ 
-    public static function update( array $champs,array $filter,String $table):void{
+    public static function update( array $champs,array $filter,String $table):bool{
         ControlDb::verifyConnection();
         $str_key="";
         $str_value="";
@@ -172,7 +172,7 @@ $filter : champs le9dim mta3i
         // try to execute the query 
         try{
         $result = ControlDb::$database->prepare("UPDATE $table SET $str_key $filter_key");
-        $result->execute($tab);
+        return $result->execute($tab);
         }
         catch(PDOException $e){
             echo "err in update query : " .$e->getMessage();

@@ -50,7 +50,7 @@ public function __construct()
  }
 
  
- public static function insert(Object $obj,String $tableName){
+ public static function insert(Object $obj,String $tableName):bool{
    $class = get_class($obj);
    if(!class_exists($class))throw new Exception("class not found in insert ORM");
    $classVar=get_class_vars($class);
@@ -59,14 +59,14 @@ public function __construct()
     $conn=DataBaseConnection::getConnection();
      $array =(array)$obj;
      unset($array['id']); 
-     ControlDb::insert($array,$tableName);
+    return  ControlDb::insert($array,$tableName);
    
    }
 
  }
 
 
- public static function update(Object $obj,array $filter,String $tableName):void{
+ public static function update(Object $obj,array $filter,String $tableName):bool{
   $class = get_class($obj);
   if(!class_exists($class))throw new Exception("class not found in update ORM");
   $classVar=get_class_vars($class);
@@ -75,11 +75,11 @@ public function __construct()
    $conn=DataBaseConnection::getConnection();
     $array =(array)$obj;
     unset($array['id']);
-    ControlDb:: update($array,$filter,$tableName);
+   return  ControlDb:: update($array,$filter,$tableName);
   
   }
  }
- public static function delete(Object $obj,array $filter,String $tableName):void {
+ public static function delete(Object $obj,array $filter,String $tableName):bool {
   $class = get_class($obj);
   if(!class_exists($class))throw new Exception("class not found in delete ORM");
   $classVar=get_class_vars($class);
@@ -87,7 +87,7 @@ public function __construct()
   if($verif){
    $conn=DataBaseConnection::getConnection();
     $array =(array)$obj;
-    ControlDb:: delete($filter,$tableName);
+    return ControlDb:: delete($filter,$tableName);
 
  }
  }
