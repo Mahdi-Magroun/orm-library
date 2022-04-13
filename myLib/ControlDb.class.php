@@ -96,11 +96,7 @@ class ControlDb{
     }
 
 
-    // delete query 
-    /**
-     * $filter : el champ eli bech na3mel bih rsearch al hajet eli bech nfasakhha 
-     * $log->delete(['name'=>$user1['name'],'pseudo'=>$user1['pseudo'],'password'=>$user1['password']])
-     */
+    
     public static function  delete(array $filter,string $tableName):bool{
         ControlDb::verifyConnection();
         $filter_key=" WHERE ";
@@ -129,13 +125,7 @@ class ControlDb{
 
     }
     
-    // update query  
-/*
-$chapms : champs jdid mta3i
-$filter : champs le9dim mta3i 
- *$log->update(['name'=>'zaza','pseudo'=>'bbcha','password'=>'shit01'],['name'=>$user1['name'],'pseudo'=>$user1['pseudo'],'password'=>$user1['password']])
- * 
-*/ 
+  
     public static function update( array $champs,array $filter,String $table):bool{
         ControlDb::verifyConnection();
         $str_key="";
