@@ -60,6 +60,16 @@ class Sql {
         return $this->attribute;
     }
 
+    public static function executeQuery(String $content) {
+        $connection=DataBaseConnection::getConnection();
+        //echo $content." from  sql class.$content";
+        try{
+            $connection->query($content);
+        }
+        catch(PDOException $e){
+            echo "err in execution ".$e->getMessage();
+        }
+    }
 
 
 }

@@ -1,6 +1,4 @@
 <?php
-
-use function PHPSTORM_META\sql_injection_subst;
 include_once "./console.class/sql.php";
 include_once "./console.class/generate.php";
 $pathEntity="../../Entity";
