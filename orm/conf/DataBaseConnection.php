@@ -4,8 +4,8 @@ class DataBaseConnection{
 private String $host="127.0.0.1";
 private String $usr="root";
 private String  $pwd="mmagrounmahdi@gmail.com";
-private static String  $db='green-tow'; 
-private static PDO $connection; 
+private static String  $db='test'; 
+private static  $connection=null; 
 
 private function  __construct(){
 
@@ -25,7 +25,7 @@ public static function getConnection():PDO{
     if(DataBaseConnection::$connection==null){
          new DataBaseConnection();
     }
-    new DataBaseConnection();
+    //new DataBaseConnection();
     return DataBaseConnection::$connection;
 
 }

@@ -3,11 +3,7 @@ include_once "../ControlDb.class.php";
 include_once "./test.php";
 class ORM {
 
-/** steps 
- * learn more about pdo 
- * make an orm that can (select,update,delete,insert)
- * clsectif : manupuler les clsect 
- */
+
 public function __construct()
 {
     
