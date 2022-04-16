@@ -71,5 +71,31 @@ class Sql {
         }
     }
 
+    public static function showTables():array{
+        $connection=DataBaseConnection::getConnection();
+       $data=$connection->query(
+            'SHOW TABLES'
+        );
+        return $data->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public static function extractTableFiled($table){
+        $connection=DataBaseConnection::getConnection();
+        $DB=DataBaseConnection::getDB();
+        try{
+        $data=$connection->prepare("SELECT COLUMN_NAME 
+        FROM INFORMATION_SCHEMA.COLUMNS 
+        WHERE 
+            TABLE_SCHEMA =?
+        AND TABLE_NAME =?" );
+        $data->execute([DataBaseConnection::getDB(),$table]);
+         return $data->fetchAll(PDO::FETCH_COLUMN);
+        }
+        catch(PDOException $e){
+            $e->getMessage();
+        }
+       
+    }
+
 
 }
