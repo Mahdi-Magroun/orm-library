@@ -4,7 +4,7 @@ class DataBaseConnection{
 private String $host="127.0.0.1";
 private String $usr="root";
 private String  $pwd="mmagrounmahdi@gmail.com";
-private static String  $db='test'; 
+private static String  $db='hr'; 
 private static  $connection=null; 
 
 private function  __construct(){
